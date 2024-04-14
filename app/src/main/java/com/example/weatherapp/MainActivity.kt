@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    Greeting("Martin")
+                    //Greeting("$crs84Coords")
                 }
             }
         }
@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
                     if (location != null) {
                         val latitude = location.latitude
                         val longitude = location.longitude
-                        val crs84Coords = "POINT($longitude $latitude)"
                     }
                 }
                 .addOnFailureListener { exception ->
