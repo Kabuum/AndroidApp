@@ -22,6 +22,8 @@ import androidx.core.app.ActivityCompat
 
 class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -35,8 +37,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
-                    //Greeting("$crs84Coords")
+                    GetCoords()
+                    Greeting(latitude.toString() + longitude.toString())
                 }
             }
         }
@@ -50,8 +52,8 @@ class MainActivity : ComponentActivity() {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location ->
                     if (location != null) {
-                        val latitude = location.latitude
-                        val longitude = location.longitude
+                        latitude = location.latitude
+                        longitude = location.longitude
                     }
                 }
                 .addOnFailureListener { exception ->
