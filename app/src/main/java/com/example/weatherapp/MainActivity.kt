@@ -23,111 +23,55 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.example.weatherapp.network.RetrofitClient
-import com.example.weatherapp.network.WeatherRepository
 import com.example.weatherapp.network.WeatherResponse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Callback
+import androidx.compose.runtime.*
+import com.example.weatherapp.network.WeatherRepository
+import kotlinx.coroutines.*
+
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var latitude by mutableStateOf("Waiting for location...")
-    private var longitude by mutableStateOf("Waiting for location...")
+    private val _coordinates = MutableStateFlow<Pair<Double, Double>?>(null)
+    val coordinates = _coordinates.asStateFlow()
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        requestLocationPermission()
         super.onCreate(savedInstanceState)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        getCoordinates()
         val weatherData = mutableStateOf<WeatherResponse?>(null)
-        
         setContent {
-            WeatherAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
+            WeatherAppTheme { // Define your Compose theme
+                WeatherScreen(weatherData.value)
 
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    WeatherScreen()
-                    DisplayLocation(latitude, longitude)
-                }
             }
         }
     }
-    private fun fetchWeather(latitude: Double, longitude: Double) {
-        RetrofitClient.webservice.getCurrentWeather(latitude, longitude).enqueue(object : Callback<WeatherResponse> {
-            override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
-                if (response.isSuccessful) {
-                    // Update the UI with the weather data
-                    val weatherData = response.body()
-                    runOnUiThread {
-                        // Assuming you have TextViews or other UI elements to update
-                        //findViewById<TextView>(R.id.temperatureTextView).text = "Temperature: ${weatherData?.temperature_2m}"
-                    }
-                } else {
-                    // Handle unsuccessful response
-                    Log.e("API_ERROR", "Response not successful")
-                }
-            }
 
-            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                // Handle failure to make or process the call
-                Log.e("API_ERROR", "Failed to fetch weather data", t)
-            }
-        })
-    }
-
-    private fun requestLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-                PERMISSION_REQUEST_LOCATION
-            )
-        } else {
-            getCoords()
-        }
-    }
-    private fun getCoords(coordinates: MutableState<Pair<Double, Double>?>) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // If permissions aren't granted, perhaps notify the user or handle accordingly
-            Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show()
+    private fun getCoordinates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_LOCATION)
             return
         }
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                latitude = "${location.latitude}"
-                longitude = "${location.longitude}"
-            } else {
-                latitude = "Location not available"
-                longitude = "Location not available"
+            location?.let {
+                _coordinates.value = Pair(it.latitude, it.longitude)
             }
         }
     }
-
     companion object {
         private const val PERMISSION_REQUEST_LOCATION = 100
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 @Composable
 fun DisplayLocation(latitude: String, longitude: String) {
     Column(modifier = Modifier.padding(16.dp)) {
@@ -150,12 +94,5 @@ fun WeatherScreen(weatherData: WeatherResponse? = null) {
         } else {
             Text("Loading or no data available.")
         }
-    }
-}
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    WeatherAppTheme {
-        Greeting("Android",)
     }
 }

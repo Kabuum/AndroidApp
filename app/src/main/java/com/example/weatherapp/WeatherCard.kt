@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun WeatherCard(currentWeather: WeatherData) {
-    var isLoading by remember { mutableStateOf(true) } // Simulate data fetching
 
     Card(
         modifier = Modifier
@@ -43,37 +42,33 @@ fun WeatherCard(currentWeather: WeatherData) {
 
     ) {
         Box(modifier = Modifier.background(color = getBackgroundColor(currentWeather.condition))) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row( // Add a Row to place the icon and temperature next to each other
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // Display weather icon based on condition
-                        val weatherImageId = getWeatherImage(currentWeather.condition)
-                        Image(
-                            painter = painterResource(id = weatherImageId),
-                            contentDescription = "Weather Icon",
-                            modifier = Modifier.size(48.dp) // Adjust icon size as needed
-                        )
-                        Spacer(modifier = Modifier.width(8.dp)) // Add spacing between icon and text
-                        Text(
-                            text = "°C" + currentWeather.temperature,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row( // Add a Row to place the icon and temperature next to each other
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Display weather icon based on condition
+                    val weatherImageId = getWeatherImage(currentWeather.condition)
+                    Image(
+                        painter = painterResource(id = weatherImageId),
+                        contentDescription = "Weather Icon",
+                        modifier = Modifier.size(48.dp) // Adjust icon size as needed
+                    )
+                    Spacer(modifier = Modifier.width(8.dp)) // Add spacing between icon and text
                     Text(
-                        text = "The current weather is: " + currentWeather.condition,
-                        color = Color.Black,
+                        text = "°C" + currentWeather.temperature,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "The current weather is: " + currentWeather.condition,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
         }
     }
