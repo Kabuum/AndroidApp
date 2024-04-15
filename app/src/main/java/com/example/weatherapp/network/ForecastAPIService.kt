@@ -10,7 +10,7 @@ private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())
     .baseUrl(BASE_URL)
 
-interface MarsApiService {
+interface WeatherApiService {
     @GET("/collections/harmonie_nea_sf/position")
     fun getForecast(
         @Query("coords") coordinates: String,
