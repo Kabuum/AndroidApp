@@ -50,7 +50,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             WeatherAppTheme { // Define your Compose theme
                 WeatherScreen(weatherData.value)
-
             }
         }
     }
@@ -60,7 +59,6 @@ class MainActivity : ComponentActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_LOCATION)
             return
         }
-
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             location?.let {
                 _coordinates.value = Pair(it.latitude, it.longitude)
