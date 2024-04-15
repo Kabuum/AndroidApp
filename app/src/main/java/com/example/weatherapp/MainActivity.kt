@@ -16,6 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun GetCoords(){
+        Log.d("Location", "played function")
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -52,8 +54,9 @@ class MainActivity : ComponentActivity() {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location ->
                     if (location != null) {
-                        latitude = location.latitude
-                        longitude = location.longitude
+                        Log.d("Location", "got location change")
+                        latitude = 10.0//location.latitude
+                        longitude = 50.0//location.longitude
                     }
                 }
                 .addOnFailureListener { exception ->
