@@ -23,7 +23,7 @@ import androidx.core.app.ActivityCompat
 class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
+    private var longitude: Double = 0.00
     override fun onCreate(savedInstanceState: Bundle?) {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
