@@ -3,6 +3,7 @@ import android.Manifest
 import android.app.Application
 import android.content.pm.PackageManager
 import android.location.Location
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,6 +33,7 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
             val location = getLocation()
             location?.let {
                 val coordinates = Pair(it.latitude, it.longitude)
+                Log.d("Coordinates", "${coordinates}")
                 weatherRepository.fetchWeather(coordinates) { weatherResponse, error ->
                     if (error != null) {
                         // Handle error
@@ -52,7 +54,6 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
         return try {
             if (ActivityCompat.checkSelfPermission(getApplication(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // Permissions are not granted
                 return null // Return null when permissions are not available
             }
             // Proceed with getting the location

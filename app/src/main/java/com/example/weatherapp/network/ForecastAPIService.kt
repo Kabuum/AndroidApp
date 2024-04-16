@@ -50,7 +50,7 @@ class WeatherRepository {
     // Changed the method signature to accept Pair<Double, Double>
     fun fetchWeather(coordinates: Pair<Double, Double>, callback: (WeatherResponse?, Throwable?) -> Unit) {
         // Use the coordinates directly from the Pair
-        RetrofitClient.webservice.getCurrentWeather(coordinates.first, coordinates.second).enqueue(object : Callback<WeatherResponse> {
+        RetrofitClient.webservice.getCurrentWeather(latitude = coordinates.first, longitude = coordinates.second).enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(call: Call<WeatherResponse>, response: Response<WeatherResponse>) {
                 if (response.isSuccessful) {
                     callback(response.body(), null)

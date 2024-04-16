@@ -34,6 +34,7 @@ import retrofit2.Callback
 import androidx.compose.runtime.*
 import com.example.weatherapp.network.WeatherRepository
 import kotlinx.coroutines.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 
@@ -49,7 +50,7 @@ class MainActivity : ComponentActivity() {
         val weatherData = mutableStateOf<WeatherResponse?>(null)
         setContent {
             WeatherAppTheme { // Define your Compose theme
-                WeatherScreen(weatherData.value)
+                WeatherScreen2()
             }
         }
     }
@@ -78,19 +79,29 @@ fun DisplayLocation(latitude: String, longitude: String) {
     }
 }
 @Composable
-fun WeatherScreen(weatherData: WeatherResponse? = null) {
+fun WeatherScreen2() {
+    val viewModel: WeatherViewModel = viewModel()
+    val weather = viewModel.weatherData.collectAsState()
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Weather Information")
-        if (weatherData != null) {
-            Text("Temperature: ${weatherData.temperature_2m} °C")
-            Text("Humidity: ${weatherData.relative_humidity_2m} %")
-            Text("Feels Like: ${weatherData.apparent_temperature} °C")
-            Text("Cloud Cover: ${weatherData.cloud_cover} %")
-            Text("Wind Speed: ${weatherData.wind_speed_10m} km/h")
-            Text("Precipitation: ${weatherData.precipitation} mm")
-            Text("Visibility: ${weatherData.visibility} meters")
+        if (weather.value != null) {
+            Text("Temperature: ${weather.value?.temperature_2m} °C")
+            Text("Humidity: ${weather.value?.relative_humidity_2m} %")
+            Text("Feels Like: ${weather.value?.apparent_temperature} °C")
+            Text("Cloud Cover: ${weather.value?.cloud_cover} %")
+            Text("Wind Speed: ${weather.value?.wind_speed_10m} km/h")
+            Text("Precipitation: ${weather.value?.precipitation} mm")
+            Text("Visibility: ${weather.value?.visibility} meters")
         } else {
             Text("Loading or no data available.")
         }
     }
+}
+@Composable
+fun WeatherScreen() {
+    // Retrieves WeatherViewModel, automatically providing it with the Application context
+    val viewModel: WeatherViewModel = viewModel()
+    val weather = viewModel.weatherData.collectAsState()
+
+    Text("Current Weather: ${weather.value}")
 }
