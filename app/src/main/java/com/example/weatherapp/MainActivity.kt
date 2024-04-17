@@ -65,7 +65,12 @@ fun WeatherScreen2(viewModel: WeatherViewModel) {
 fun CurrentWeatherDisplay(viewModel: WeatherViewModel, modifier: Modifier){
     var state = viewModel.weatherData.collectAsState()
     Surface(modifier = Modifier.fillMaxSize(), color = getBackgroundColor(state.value?.weather_code)) {
-        Box {
+        Box(modifier = Modifier.padding(
+            start = 16.dp,
+            top = 16.dp,
+            end = 16.dp,
+            bottom = 16.dp)
+        ) {
             Column {
                 Image(painter = painterResource(id = convertWeatherCodeToImage(state.value?.weather_code)), contentDescription = convertWeatherCodeToString(state.value?.weather_code))
                 Text(text = "${state.value?.temperature_2m}°C", modifier = Modifier)
