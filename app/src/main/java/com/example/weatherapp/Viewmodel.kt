@@ -47,20 +47,12 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                 cloud_cover = current.getInt("cloud_cover"),
                 wind_speed_10m = current.getDouble("wind_speed_10m").toFloat(),
                 precipitation = current.getDouble("precipitation").toFloat(),
-                is_day = when(current.getInt("is_day")){
+                is_day = when (current.getInt("is_day")) {
                     1 -> true
                     else -> false
                 }
             )
-            weatherData.update { it?.copy(
-                temperature_2m = _weatherData.temperature_2m,
-                relative_humidity_2m = _weatherData.relative_humidity_2m,
-                cloud_cover = _weatherData.cloud_cover,
-                wind_speed_10m = _weatherData.wind_speed_10m,
-                precipitation = _weatherData.precipitation,
-                is_day = _weatherData.is_day
-            ) }
+            weatherData.value = _weatherData
         }
-
     }
 }

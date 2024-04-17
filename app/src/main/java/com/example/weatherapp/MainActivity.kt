@@ -45,7 +45,6 @@ fun WeatherScreen2(viewModel: WeatherViewModel) {
             Text("Temperature: ${state.value?.temperature_2m} °C")
         } else {
             Text("Loading or no data available.")
-            state = viewModel.weatherData.collectAsState()
         }
     }
 }
