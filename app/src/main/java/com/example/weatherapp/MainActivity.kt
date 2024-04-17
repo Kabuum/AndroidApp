@@ -92,11 +92,12 @@ fun CurrentWeatherDisplay(viewModel: WeatherViewModel, modifier: Modifier){
 }
 fun convertWeatherCodeToImage(weatherCode: Int?): Int{
     val weatherCodeConverted = when(weatherCode){
-        0 -> R.drawable.sunny
-        1,2,3 -> R.drawable.cloudy
-        51, 53, 55, 56, 57, 61, 63 ,65, 66, 67 -> R.drawable.rainy
-        45, 48 -> R.drawable.foggy
-        else -> R.drawable.cloudy
+        0 -> R.drawable.sunny_48px
+        1,2 -> R.drawable.partly_cloudy_day_48px
+        3 -> R.drawable.cloud_48px
+        51, 53, 55, 56, 57, 61, 63 ,65, 66, 67 -> R.drawable.rainy_48px
+        45, 48 -> R.drawable.foggy_48px
+        else -> R.drawable.cloud_48px
     }
     return weatherCodeConverted
 }

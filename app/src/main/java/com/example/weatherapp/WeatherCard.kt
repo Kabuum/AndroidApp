@@ -87,10 +87,10 @@ fun getBackgroundColor(condition: String): Color {
 
 fun getWeatherImage(condition: String): Int {
     return when (condition){
-        "Sunny" ->  R.drawable.sunny1
-        "Cloudy" -> R.drawable.wbcloudy
-        "Rainy" -> R.drawable.wbrainy
-        else -> R.drawable.wbcloudy
+        "Sunny" ->  R.drawable.sunny_48px
+        "Cloudy" -> R.drawable.cloud_48px
+        "Rainy" -> R.drawable.rainy_48px
+        else -> R.drawable.cloud_48px
     }
 
 }
