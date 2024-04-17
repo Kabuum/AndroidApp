@@ -34,10 +34,8 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     }
     fun fetchWeather() {
         // Use the coordinates directly from the Pair
-        Log.d("before viewmodel", "before viewmodel")
         viewModelScope.launch {
             val result = RetrofitClient.service.getCurrentWeather()
-            Log.d("result", result)
             val jsonObject: JSONObject = JSONObject(result)
             val current = jsonObject.getJSONObject("current")
 
@@ -50,7 +48,8 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                 is_day = when (current.getInt("is_day")) {
                     1 -> true
                     else -> false
-                }
+                },
+                weather_code = (current.getInt("weather_code"))
             )
             weatherData.value = _weatherData
         }

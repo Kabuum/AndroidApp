@@ -6,7 +6,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
 interface OpenMeteoService {
-    @GET("/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,relative_humidity_2m,is_day,precipitation,cloud_cover,wind_speed_10m")
+    //@GET("/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,relative_humidity_2m,is_day,precipitation,cloud_cover,wind_speed_10m")
+    @GET("/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m")
     suspend fun getCurrentWeather(
     ): String
 }
@@ -18,6 +19,7 @@ data class WeatherData(
     val wind_speed_10m: Float,
     val precipitation: Float,
     val is_day: Boolean,
+    val weather_code: Int
 )
 
 object RetrofitClient {
