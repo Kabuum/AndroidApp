@@ -1,5 +1,6 @@
 package com.example.weatherapp
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -60,12 +61,57 @@ fun WeatherScreen2(viewModel: WeatherViewModel) {
 @Composable
 fun CurrentWeatherDisplay(viewModel: WeatherViewModel, modifier: Modifier){
     var state = viewModel.weatherData.collectAsState()
-    Surface(modifier = Modifier.fillMaxSize(), color ) {
+    Surface(modifier = Modifier.fillMaxSize(), color = ) {
         Box {
             Column {
-                //Image(painter = , contentDescription = "")
+                Image(painter = , contentDescription = "")
                 Text(text = "${state.value?.temperature_2m}°C", modifier = Modifier)
+                Text(text = convertWeatherCodeToString(state.value?.weather_code), modifier = Modifier)
             }
         }
     }
+}
+fun convertWeatherCodeToImage(weatherCode: Int?): Int{
+    val weatherCodeConverted = when(weatherCode){
+        0 -> R.drawable.sunny
+        1,2,3 -> R.drawable.cloudy
+        51, 53, 55, 56, 57, 61, 63 ,65, 66, 67 -> R.drawable.rainy
+        45, 48 -> R.drawable.foggy
+        else -> R.drawable.cloudy
+    }
+    return weatherCodeConverted
+}
+fun convertWeatherCodeToString(weatherCode: Int?): String{
+    val weatherCodeConverted = when(weatherCode){
+        0 -> "Clear Sky"
+        1 -> "Mainly Clear"
+        2 -> "Partly Cloudy"
+        3 -> "Overcast"
+        45 -> "Fog"
+        48 -> "Depositing Rime Fog"
+        51 -> "Light Drizzle"
+        53 -> "Moderate Drizzle"
+        55 -> "Dense Drizzle"
+        56 -> "Freezing Light Drizzle"
+        57 -> "Freezing Dense Drizzle"
+        61 -> "Slight Rain"
+        63 -> "Moderate Rain"
+        65 -> "Heavy Rain"
+        66 -> "Freezing Light Rain"
+        67 -> "Freezing Heavy Rain"
+        71 -> "Slight Snow Fall"
+        73 -> "Moderate Snow Fall"
+        75 -> "Heavy Snow Fall"
+        77 -> "Snow Grains"
+        80 -> "Slight Rain Showers"
+        81 -> "Moderate Rain Showers"
+        82 -> "Violent Rain Showers"
+        85 -> "Slight Snow Shower"
+        86 -> "Heavy Snow Shower"
+        95 -> "Thunderstorm"
+        96 -> "Thunderstorm With Slight Hail"
+        99 -> " Thunderstorm With Heavy Hail"
+        else -> "Cloudy"
+    }
+    return weatherCodeConverted
 }
