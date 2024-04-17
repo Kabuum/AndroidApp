@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement.Absolute.Center
 import androidx.compose.foundation.layout.Box
 
 import androidx.compose.material3.Text
@@ -13,15 +14,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import androidx.compose.runtime.*
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -66,15 +72,20 @@ fun CurrentWeatherDisplay(viewModel: WeatherViewModel, modifier: Modifier){
     var state = viewModel.weatherData.collectAsState()
     Surface(modifier = Modifier.fillMaxSize(), color = getBackgroundColor(state.value?.weather_code)) {
         Box(modifier = Modifier.padding(
-            start = 16.dp,
-            top = 16.dp,
-            end = 16.dp,
-            bottom = 16.dp)
+            start = 150.dp,
+            top = 50.dp,
+            end = 50.dp,
+            bottom = 50.dp)
         ) {
             Column {
-                Image(painter = painterResource(id = convertWeatherCodeToImage(state.value?.weather_code)), contentDescription = convertWeatherCodeToString(state.value?.weather_code))
-                Text(text = "${state.value?.temperature_2m}°C", modifier = Modifier)
-                Text(text = convertWeatherCodeToString(state.value?.weather_code), modifier = Modifier)
+                Image(painter = painterResource(id = convertWeatherCodeToImage(state.value?.weather_code)), contentDescription = convertWeatherCodeToString(state.value?.weather_code), modifier.scale(3f,2f))
+                Spacer(modifier = Modifier.height(60.dp))
+                Text(text = "${state.value?.temperature_2m}°C", textAlign = TextAlign.Center, modifier = Modifier.offset((10).dp))
+                Text(text =  convertWeatherCodeToString(state.value?.weather_code), textAlign = TextAlign.Center, modifier = Modifier.offset((-20).dp))
+                Text(text = "Cloud coverage: ${state.value?.cloud_cover}%", textAlign = TextAlign.Center, modifier = Modifier.offset((-50).dp))
+                Text(text = "Precipitation: ${state.value?.precipitation} mm", textAlign = TextAlign.Center, modifier = Modifier.offset((-50).dp))
+                Text(text = "Humidity: ${state.value?.relative_humidity_2m}%", textAlign = TextAlign.Center, modifier = Modifier.offset((-30).dp))
+                Text(text = "Wind speed: ${state.value?.wind_speed_10m} m/s", textAlign = TextAlign.Center, modifier = Modifier.offset((-50).dp))
             }
         }
     }
