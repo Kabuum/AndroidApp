@@ -115,7 +115,7 @@ fun UI (viewModel: WeatherViewModel, backgroundColor: Color, modifier: Modifier 
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            Image(painter = painterResource(id = convertWeatherCodeToImage(state.value?.weather_code)), contentDescription = convertWeatherCodeToString(state.value?.weather_code))
+            Image(painter = painterResource(id = convertWeatherCodeToImage(state.value?.weather_code)), contentDescription = convertWeatherCodeToString(state.value?.weather_code), Modifier.scale(2f,2f))
             Spacer(modifier = Modifier.height(16.dp))
             androidx.compose.material.Text(
                 text = "${state.value?.temperature_2m}°C",
@@ -134,9 +134,9 @@ fun UI (viewModel: WeatherViewModel, backgroundColor: Color, modifier: Modifier 
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
 
-                Image( painterResource(id = R.drawable.humidity_percentage_wght400_opsz48), contentDescription = null)
+                Image( painterResource(id = R.drawable.humidity_percentage_wght400_opsz48), contentDescription = null, Modifier.scale(1.5f).offset(5.dp, 2.dp))
                 Text(text = "${state.value?.relative_humidity_2m} %")
-                Image(painterResource(id = R.drawable.air_wght400_opsz48), contentDescription =null)
+                Image(painterResource(id = R.drawable.air_wght400_opsz48), contentDescription = null, Modifier.scale(1.5f).offset(5.dp,2.dp))
                 Text(text = "${state.value?.wind_speed_10m} km/h")
             }
         }
