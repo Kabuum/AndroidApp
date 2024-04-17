@@ -133,11 +133,14 @@ fun UI (viewModel: WeatherViewModel, backgroundColor: Color, modifier: Modifier 
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-
-                Image( painterResource(id = R.drawable.humidity_percentage_wght400_opsz48), contentDescription = null)
-                Text(text = "${state.value?.relative_humidity_2m} %")
-                Image(painterResource(id = R.drawable.air_wght400_opsz48), contentDescription =null)
-                Text(text = "${state.value?.wind_speed_10m} km/h")
+                Card(shape = RoundedCornerShape(10.dp),) {
+                    Image( painterResource(id = R.drawable.humidity_percentage_wght400_opsz48), contentDescription = null)
+                    Text(text = "${state.value?.relative_humidity_2m} %")
+                }
+                Card(shape = RoundedCornerShape(10.dp), backgroundColor = getBackgroundColor(state.value?.weather_code)) {
+                    Image(painterResource(id = R.drawable.air_wght400_opsz48), contentDescription =null)
+                    Text(text = "${state.value?.wind_speed_10m} km/h")
+                }
             }
         }
     }
