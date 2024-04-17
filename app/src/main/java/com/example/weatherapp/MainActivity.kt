@@ -58,47 +58,6 @@ class MainActivity : ComponentActivity() {
 
 }
 @Composable
-fun WeatherScreen2(viewModel: WeatherViewModel) {
-    var state = viewModel.weatherData.collectAsState()
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Weather Information")
-        if (state.value != null) {
-            Text("Temperature: ${state.value?.temperature_2m} °C")
-            Text("Humidity: ${state.value?.relative_humidity_2m}%")
-            Text("Cloud Cover ${state.value?.cloud_cover}")
-            Text("Precipitation ${state.value?.precipitation}")
-            Text("Day? ${state.value?.is_day}")
-            Text("Weather Code ${state.value?.weather_code}")
-        } else {
-            Text("Loading or no data available.")
-        }
-    }
-}
-@Composable
-fun CurrentWeatherDisplay(viewModel: WeatherViewModel, modifier: Modifier){
-    var state = viewModel.weatherData.collectAsState()
-    Surface(modifier = Modifier.fillMaxSize(), color = getBackgroundColor(state.value?.weather_code)) {
-        Box(modifier = Modifier.padding(
-            start = 150.dp,
-            top = 50.dp,
-            end = 50.dp,
-            bottom = 50.dp)
-        ) {
-            Column {
-                Image(painter = painterResource(id = convertWeatherCodeToImage(state.value?.weather_code)), contentDescription = convertWeatherCodeToString(state.value?.weather_code), modifier.scale(3f,2f))
-                Spacer(modifier = Modifier.height(60.dp))
-                Text(text = "${state.value?.temperature_2m}°C", textAlign = TextAlign.Center, modifier = Modifier.offset((10).dp))
-                Text(text =  convertWeatherCodeToString(state.value?.weather_code), textAlign = TextAlign.Center, modifier = Modifier.offset((-20).dp))
-                Text(text = "Cloud coverage: ${state.value?.cloud_cover}%", textAlign = TextAlign.Center, modifier = Modifier.offset((-50).dp))
-                Text(text = "Precipitation: ${state.value?.precipitation} mm", textAlign = TextAlign.Center, modifier = Modifier.offset((-50).dp))
-                Text(text = "Humidity: ${state.value?.relative_humidity_2m}%", textAlign = TextAlign.Center, modifier = Modifier.offset((-30).dp))
-                Text(text = "Wind speed: ${state.value?.wind_speed_10m} m/s", textAlign = TextAlign.Center, modifier = Modifier.offset((-50).dp))
-            }
-        }
-    }
-}
-
-@Composable
 fun UI (viewModel: WeatherViewModel, backgroundColor: Color, modifier: Modifier = Modifier) {
     var state = viewModel.weatherData.collectAsState()
     Card(
