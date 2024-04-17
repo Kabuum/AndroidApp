@@ -7,8 +7,8 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherapp.network.WeatherRepository
-import com.example.weatherapp.network.WeatherResponse
+import com.example.weatherapp.network.RetrofitClient
+import com.example.weatherapp.network.WeatherData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -17,50 +17,50 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.gson.JsonObject
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.tasks.await
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class WeatherViewModel(application: Application) : AndroidViewModel(application) {
-    private var fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
-    private val weatherRepository = WeatherRepository()
-    val weatherData = MutableStateFlow<WeatherResponse?>(null)
+    var weatherData = MutableStateFlow<WeatherData?>(null)
 
     init {
-        fetchWeatherData()
+        fetchWeather()
     }
-
-    private fun fetchWeatherData() {
+    fun fetchWeather() {
+        // Use the coordinates directly from the Pair
+        Log.d("before viewmodel", "before viewmodel")
         viewModelScope.launch {
-            val location = getLocation()
-            location?.let {
-                val coordinates = Pair(it.latitude, it.longitude)
-                Log.d("Coordinates", "${coordinates}")
-                weatherRepository.fetchWeather(coordinates) { weatherResponse, error ->
-                    if (error != null) {
-                        // Handle error
-                    } else {
-                        weatherData.value = weatherResponse
-                    }
+            val result = RetrofitClient.service.getCurrentWeather()
+            Log.d("result", result)
+            val jsonObject: JSONObject = JSONObject(result)
+            val current = jsonObject.getJSONObject("current")
+
+            val _weatherData = WeatherData(
+                temperature_2m = current.getDouble("temperature_2m").toFloat(),
+                relative_humidity_2m = current.getInt("relative_humidity_2m"),
+                cloud_cover = current.getInt("cloud_cover"),
+                wind_speed_10m = current.getDouble("wind_speed_10m").toFloat(),
+                precipitation = current.getDouble("precipitation").toFloat(),
+                is_day = when(current.getInt("is_day")){
+                    1 -> true
+                    else -> false
                 }
-            }
+            )
+            weatherData.update { it?.copy(
+                temperature_2m = _weatherData.temperature_2m,
+                relative_humidity_2m = _weatherData.relative_humidity_2m,
+                cloud_cover = _weatherData.cloud_cover,
+                wind_speed_10m = _weatherData.wind_speed_10m,
+                precipitation = _weatherData.precipitation,
+                is_day = _weatherData.is_day
+            ) }
         }
-    }
 
-    private suspend fun getLocation(): Location? {
-        val cancellationTokenSource = CancellationTokenSource()
-
-        // Use the new LocationRequest.Builder
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,60000)
-            .build()
-        return try {
-            if (ActivityCompat.checkSelfPermission(getApplication(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return null // Return null when permissions are not available
-            }
-            // Proceed with getting the location
-            fusedLocationClient.getCurrentLocation(locationRequest.priority, cancellationTokenSource.token).await()
-        } catch (e: Exception) {
-            // Handle any exceptions
-            null
-        }
     }
 }
