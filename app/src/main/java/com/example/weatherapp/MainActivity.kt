@@ -19,6 +19,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,8 +37,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WeatherAppTheme { // Define your Compose theme
-                WeatherScreen2(ViewModel)
+            WeatherAppTheme {
+                CurrentWeatherDisplay(viewModel = ViewModel, modifier = Modifier)
             }
         }
     }
@@ -61,10 +64,10 @@ fun WeatherScreen2(viewModel: WeatherViewModel) {
 @Composable
 fun CurrentWeatherDisplay(viewModel: WeatherViewModel, modifier: Modifier){
     var state = viewModel.weatherData.collectAsState()
-    Surface(modifier = Modifier.fillMaxSize(), color = ) {
+    Surface(modifier = Modifier.fillMaxSize(), color = getBackgroundColor(state.value?.weather_code)) {
         Box {
             Column {
-                Image(painter = , contentDescription = "")
+                Image(painter = painterResource(id = convertWeatherCodeToImage(state.value?.weather_code)), contentDescription = convertWeatherCodeToString(state.value?.weather_code))
                 Text(text = "${state.value?.temperature_2m}°C", modifier = Modifier)
                 Text(text = convertWeatherCodeToString(state.value?.weather_code), modifier = Modifier)
             }
@@ -114,4 +117,13 @@ fun convertWeatherCodeToString(weatherCode: Int?): String{
         else -> "Cloudy"
     }
     return weatherCodeConverted
+}
+fun getBackgroundColor(weatherCode: Int?): Color {
+    return when (weatherCode) {
+        0 -> Color(0xFFFFE0B2)
+        1,2,3 -> Color(0xFFCED4E0)
+        51, 53, 55, 56, 57, 61, 63 ,65, 66, 67 -> Color(0xFF90B2F7)
+        45, 48 -> Color(0xFF949597)
+        else -> Color(0xFFFFE0B2)
+    }
 }
