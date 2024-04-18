@@ -50,7 +50,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WeatherAppTheme {
-                //CurrentWeatherDisplay(viewModel = ViewModel, modifier = Modifier)
                 UI(viewModel = ViewModel, backgroundColor = Color.White, modifier = Modifier)
             }
         }
